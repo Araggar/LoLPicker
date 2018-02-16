@@ -107,6 +107,7 @@ class builder:
         for i, rune in enumerate(runes):
             print() if i == 8 else None
             print(rune)
+        print("\n---END---\n")
 
     def exit(self, *_):
         print("Goodbye!")
@@ -118,7 +119,7 @@ class builder:
             inp = re.sub(
                 "[\W]*",
                 '',
-                input("\n\n\nOptions are:\nadd\nremove\nlist\nexit\n\nType the champion name/role to get a build\n>>> ")).lower()
+                input("\nOptions are:\nadd\nremove\nlist\nexit\n\nType the champion name/role to get a build\n>>> ")).lower()
             try:
                 getattr(self, inp, self.build)(inp)
             except Exception:
