@@ -95,7 +95,7 @@ class builder:
         print("\n{}".format(champion.upper()))
         print("\n---ITEMS---\n")
         for i, items in enumerate(popular):
-            if i in [6, 8, 10]:
+            if i in [6, 10]:
                 print()
 
             print("{} --- {}".format(items[0], items[1]))
