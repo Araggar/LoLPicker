@@ -21,7 +21,6 @@ class builder:
         else:
             with open("champions.json", 'w') as champ_file:
                 json.dump([[], [], [], [], []], champ_file)
-
             self.top = []
             self.jungle = []
             self.mid = []
@@ -80,6 +79,8 @@ class builder:
             print("Role <{}> is empty!".format(inp))
             return
 
+        print("\n{}".format(champion.upper()))
+        #items
         addr = "http://www.probuilds.net/champions/details/{}".format(champion)
         session = requests.Session()
         html = session.get(addr)
@@ -94,23 +95,33 @@ class builder:
             print("Invalid Champion/Role <{}>".format(inp))
             return
 
-        print("\n{}".format(champion.upper()))
-        print("\n---ITEMS---\n")
-        for i, items in enumerate(popular):
-            if i in [6, 10]:
-                print()
+        #skill order
+        addr_skill = "http://op.gg/champion/{}/statistics/{}".format(champion, inp)
+        html = session.get(addr_skill)
+        skill_order = re.findall('"champion-stats__list__item tip"[\w\W]*?<span>([QWER])*?<\/span>', html.text)
 
-            print(str_.format(items[0], items[1]))
-
+        #runes
         addr_runes = "http://champion.gg/champion/{}/{}?".format(champion, inp)
         html = session.get(addr_runes)
+        
         runes = re.findall("color=[\w\W]+?>([\w\s:\-']+?)<\/div>", html.text)
         runes = [rune for rune in runes if '\n' not in rune]
         print("\n---RUNES---\n")
         for i, rune in enumerate(runes):
             print() if i == 8 else None
             print(rune)
+
+        print("\n---SKILLS---\n")
+        print("{} > {} > {}".format(skill_order[0], skill_order[1], skill_order[2]))
+        
+        print("\n---ITEMS---\n")
+        for i, items in enumerate(popular):
+            if i in [6, 10]:
+                print()
+
+            print(str_.format(items[0], items[1]))
         print("\n---END---\n")
+
 
     def exit(self, *_):
         print("Goodbye!")
