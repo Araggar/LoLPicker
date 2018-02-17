@@ -85,8 +85,10 @@ class builder:
         html = session.get(addr)
 
         popular = re.findall(
-            "'item-name gold'>([\w\s:']+?)<\/div>[\w\W]+?'popularity green'>([\d\.]+?%)+?<\/div>",
+            "'item-name gold'>([\w\s:\-']+?)<\/div>[\w\W]+?'popularity green'>([\d\.]+?%)+?<\/div>",
             html.text)
+        max_len = max([len(item[0]) for item in popular])
+        str_ = "{:" + str(max_len) + "} --- {}"
 
         if not popular:
             print("Invalid Champion/Role <{}>".format(inp))
@@ -98,11 +100,12 @@ class builder:
             if i in [6, 10]:
                 print()
 
-            print("{} --- {}".format(items[0], items[1]))
+            print(str_.format(items[0], items[1]))
 
         addr_runes = "http://champion.gg/champion/{}/{}?".format(champion, inp)
         html = session.get(addr_runes)
-        runes = re.findall('color=[\w\W]+?>([\w ]+?)<\/div>', html.text)
+        runes = re.findall("color=[\w\W]+?>([\w\s:\-']+?)<\/div>", html.text)
+        runes = [rune for rune in runes if '\n' not in rune]
         print("\n---RUNES---\n")
         for i, rune in enumerate(runes):
             print() if i == 8 else None
@@ -119,7 +122,7 @@ class builder:
             inp = re.sub(
                 "[\W]*",
                 '',
-                input("\nOptions are:\nadd\nremove\nlist\nexit\n\nType the champion name/role to get a build\n>>> ")).lower()
+                input("Options are:\nadd\nremove\nlist\nexit\n\nType the champion name/role to get a build\n>>> ")).lower()
             try:
                 getattr(self, inp, self.build)(inp)
             except Exception:
